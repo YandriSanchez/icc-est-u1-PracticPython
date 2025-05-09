@@ -1,40 +1,40 @@
-#Relaciona las técnicas de ordenamiento.
-#Desarrolla módulos que emplean técnicas de ordenamiento.
-import time
+from Benchmarking import Benchmarking
+from SorthMethods import SorthMethods
+import matplotlib.pyplot as plt
 import random
 
-# Algoritmos de ordenamiento
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n - i - 1):                           
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+class App:
+    
+    def __init__(self):
+        self.sizes = [5000, 10000, 30000, 50000, 100000]
+        self.base_array = [random.randint(1, 1000000) for _ in range(max(self.sizes))]
+        self.primeros_10 = self.base_array[:10]  # Mantener los primeros 10 números fijos
+        self.metodosOrden = SorthMethods()
+        self.methods = {
+            "Burbuja": self.metodosOrden.sortByBubble,
+            "Burbuja Mejorado": self.metodosOrden.sortByBubbleOptimized,
+            "Selección": self.metodosOrden.sortBySelection,
+            "Inserción": self.metodosOrden.sortByInsertion,
+            "Shell": self.metodosOrden.sortByShell
+        }
+        self.resultados = []
+    def ejecutar_pruebas(self):
+        #"Ejecuta los algoritmos de ordenamiento y mide los tiempos de ejecución."
+        for tam in self.sizes:
+            arreglo_base = self.primeros_10 + self.base_array[10:tam]
 
-def insertion_sort(arr):
-    for i in range(1, len(arr)):   
-        key = arr[i]
-        j = i - 1
-        while j >= 0 and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
+            for nombre, metodo in self.methods.items():
+                tiempo = Benchmarking.medir_tiempo(metodo, arreglo_base)
+                self.resultados.append((tam, nombre, tiempo))
+                print(f"Tamaño: {tam}, Método: {nombre}, Tiempo: {tiempo:.6f} segundos")
+    def ejecutar_pruebas(self):
+        #"Imprime los arreglos generados antes de ordenarlos."
+        for tam in self.sizes:
+            arreglo_base = self.primeros_10 + self.base_array[10:tam]
 
-# Generar lista aleatoria
-size = 100  # Puedes cambiar el tamaño de la lista
-arr = [random.randint(0, 10000) for _ in range(size)]
-
-# Medir tiempo de Bubble Sort
-start = time.time()
-bubble_sort(arr.copy())
-bubble_time = time.time() - start
-
-# Medir tiempo de Insertion Sort
-start = time.time()
-insertion_sort(arr.copy())
-insertion_time = time.time() - start
-
-# Imprimir resultados
-print(f"Tamaño de entrada: {size}")
-print(f"Tiempo Bubble Sort: {bubble_time:.6f} segundos")
-print(f"Tiempo Insertion Sort: {insertion_time:.6f} segundos")
+            print(f"\nTamaño: {tam}, Arreglo generado:")
+            print(arreglo_base) 
+                
+if __name__ == "__main__":
+    app = App()
+    app.ejecutar_pruebas()
